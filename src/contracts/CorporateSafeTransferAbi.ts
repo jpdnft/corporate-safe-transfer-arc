@@ -29,6 +29,13 @@ export const corporateSafeTransferAbi = [
   },
   {
     type: "function",
+    name: "totalPendingAmount",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "function",
     name: "getConfig",
     stateMutability: "view",
     inputs: [],

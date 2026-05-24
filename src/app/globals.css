@@ -190,6 +190,13 @@ h1 {
   min-width: 0;
 }
 
+.sectionLabel {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 dt {
   color: var(--muted);
   font-size: 0.8rem;
@@ -228,9 +235,26 @@ textarea {
   padding: 11px 12px;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: #a9b2bd;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: transparent;
+}
+
 textarea {
   min-height: 96px;
   resize: vertical;
+}
+
+.actionNote {
+  margin: -2px 0 14px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .buttonRow {

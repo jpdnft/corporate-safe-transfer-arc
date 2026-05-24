@@ -46,6 +46,8 @@ export default function Home() {
   const [reference, setReference] = useState("");
   const [balance, setBalance] = useState<bigint | null>(null);
   const [allowance, setAllowance] = useState<bigint | null>(null);
+  const [contractBalance, setContractBalance] = useState<bigint | null>(null);
+  const [pendingAmount, setPendingAmount] = useState<bigint | null>(null);
   const [decimals, setDecimals] = useState(6);
   const [status, setStatus] = useState("Connect a wallet to start.");
   const [busy, setBusy] = useState(false);
@@ -58,7 +60,7 @@ export default function Home() {
 
   const contractUrlLabel = useMemo(() => {
     if (!hasContract) return "Contract not configured";
-    return shorten(appConfig.contractAddress);
+    return `Contract address: ${shorten(appConfig.contractAddress)}`;
   }, [hasContract]);
 
   const getProvider = useCallback(async () => {
@@ -114,14 +116,18 @@ export default function Home() {
       setCompletedTransfers(await loadTransfers(safeTransfer, completedIds));
 
       if (usdc && account) {
-        const [tokenDecimals, tokenBalance, tokenAllowance] = await Promise.all([
+        const [tokenDecimals, tokenBalance, tokenAllowance, tokenContractBalance, tokenPendingAmount] = await Promise.all([
           usdc.decimals(),
           usdc.balanceOf(account),
-          usdc.allowance(account, appConfig.contractAddress)
+          usdc.allowance(account, appConfig.contractAddress),
+          usdc.balanceOf(appConfig.contractAddress),
+          safeTransfer.totalPendingAmount()
         ]);
         setDecimals(Number(tokenDecimals));
         setBalance(tokenBalance);
         setAllowance(tokenAllowance);
+        setContractBalance(tokenContractBalance);
+        setPendingAmount(tokenPendingAmount);
       }
     } catch (error) {
       setStatus(readError(error));
@@ -236,20 +242,24 @@ export default function Home() {
       {activeTab === "admin" && (
         <section className="panel">
           <PanelHeader role="Mary" title="Admin Panel" description="CFO, owner, and deployer configures the trusted payer and recipient wallets." />
+          <h3 className="sectionLabel">Contract Info</h3>
           <dl className="dataGrid">
             <Data label="Connected wallet" value={account || "Not connected"} />
             <Data label="Contract owner" value={config.owner || "Not loaded"} />
             <Data label="Current payer" value={config.payer || "Not set"} />
             <Data label="Current recipient" value={config.recipient || "Not set"} />
             <Data label="USDC token" value={config.usdcToken || appConfig.usdcAddress || "Not configured"} />
+            <Data label="Contract USDC balance" value={formatToken(contractBalance, decimals)} />
+            <Data label="Pending transfer total" value={formatToken(pendingAmount, decimals)} />
           </dl>
+          <h3 className="sectionLabel">Contract Actions</h3>
           <div className="formGrid two">
             <label>
-              Payer wallet
+              Set payer wallet
               <input value={payerInput} onChange={(event) => setPayerInput(event.target.value)} placeholder="0x..." />
             </label>
             <label>
-              Recipient wallet
+              Set recipient wallet
               <input value={recipientInput} onChange={(event) => setRecipientInput(event.target.value)} placeholder="0x..." />
             </label>
             <button disabled={!isOwner || busy} onClick={setPayer}>Set Payer</button>
@@ -261,13 +271,18 @@ export default function Home() {
       {activeTab === "pay" && (
         <section className="panel">
           <PanelHeader role="Ralph" title="Pay Panel" description="U.S.-based accountant funds the contract without entering Rita's wallet address." />
+          <h3 className="sectionLabel">Contract Information</h3>
           <dl className="dataGrid">
             <Data label="Connected wallet" value={account || "Not connected"} />
             <Data label="Authorized payer" value={isPayer ? "Yes" : "No"} />
             <Data label="Recipient wallet" value={config.recipient || "Not set"} />
             <Data label="USDC balance" value={formatToken(balance, decimals)} />
-            <Data label="USDC allowance" value={formatToken(allowance, decimals)} />
+            <Data label="USDC approved for deposits" value={formatToken(allowance, decimals)} />
+            <Data label="Contract USDC balance" value={formatToken(contractBalance, decimals)} />
+            <Data label="Pending transfer total" value={formatToken(pendingAmount, decimals)} />
           </dl>
+          <h3 className="sectionLabel">Contract Actions</h3>
+          <p className="actionNote">NOTE: You must approve a spendable amount before making any deposits.</p>
           <div className="formGrid">
             <label>
               Amount USDC
