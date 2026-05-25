@@ -121,6 +121,19 @@ h1 {
   text-align: right;
 }
 
+.statusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.statusActions button {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
 .tabs {
   display: flex;
   gap: 8px;
@@ -330,5 +343,9 @@ textarea {
 
   .statusBand strong {
     text-align: left;
+  }
+
+  .statusActions {
+    justify-content: flex-start;
   }
 }

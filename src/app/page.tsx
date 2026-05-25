@@ -50,6 +50,7 @@ export default function Home() {
   const [pendingAmount, setPendingAmount] = useState<bigint | null>(null);
   const [decimals, setDecimals] = useState(6);
   const [status, setStatus] = useState("Connect a wallet to start.");
+  const [currentChainId, setCurrentChainId] = useState("");
   const [busy, setBusy] = useState(false);
 
   const hasContract = isAddress(appConfig.contractAddress);
@@ -62,6 +63,13 @@ export default function Home() {
     if (!hasContract) return "Contract not configured";
     return `Contract address: ${shorten(appConfig.contractAddress)}`;
   }, [hasContract]);
+
+  const expectedChainHex = useMemo(() => {
+    if (!appConfig.arcChainId) return "";
+    return `0x${Number(appConfig.arcChainId).toString(16)}`;
+  }, []);
+
+  const isWrongNetwork = Boolean(expectedChainHex && currentChainId && currentChainId !== expectedChainHex);
 
   const getProvider = useCallback(async () => {
     if (!window.ethereum) {
@@ -89,8 +97,26 @@ export default function Home() {
     try {
       const provider = await getProvider();
       const accounts = await provider.send("eth_requestAccounts", []);
+      const chainId = await provider.send("eth_chainId", []);
       setAccount(accounts[0] || "");
+      setCurrentChainId(chainId);
       setStatus("Wallet connected.");
+    } catch (error) {
+      setStatus(readError(error));
+    }
+  };
+
+  const switchNetwork = async () => {
+    if (!window.ethereum || !expectedChainHex) return;
+
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: expectedChainHex }]
+      });
+      setCurrentChainId(expectedChainHex);
+      setStatus("Network switched.");
+      await refresh();
     } catch (error) {
       setStatus(readError(error));
     }
@@ -100,6 +126,15 @@ export default function Home() {
     if (!hasContract || !window.ethereum) return;
 
     try {
+      const provider = await getProvider();
+      const chainId = await provider.send("eth_chainId", []);
+      setCurrentChainId(chainId);
+
+      if (expectedChainHex && chainId !== expectedChainHex) {
+        setStatus(`Switch wallet network to chain ${Number(appConfig.arcChainId)}.`);
+        return;
+      }
+
       const { safeTransfer, usdc } = await getContracts();
       const [owner, payer, recipient, usdcToken] = await safeTransfer.getConfig();
       const nextConfig = { owner, payer, recipient, usdcToken };
@@ -132,7 +167,7 @@ export default function Home() {
     } catch (error) {
       setStatus(readError(error));
     }
-  }, [account, getContracts, hasContract]);
+  }, [account, expectedChainHex, getContracts, getProvider, hasContract]);
 
   useEffect(() => {
     void refresh();
@@ -146,11 +181,18 @@ export default function Home() {
       setAccount(typeof nextAccounts[0] === "string" ? nextAccounts[0] : "");
     };
 
+    const handleChainChanged = (chainId: unknown) => {
+      setCurrentChainId(typeof chainId === "string" ? chainId : "");
+      void refresh();
+    };
+
     window.ethereum.on?.("accountsChanged", handleAccountsChanged);
+    window.ethereum.on?.("chainChanged", handleChainChanged);
     return () => {
       window.ethereum?.removeListener?.("accountsChanged", handleAccountsChanged);
+      window.ethereum?.removeListener?.("chainChanged", handleChainChanged);
     };
-  }, []);
+  }, [refresh]);
 
   const runTransaction = async (label: string, action: () => Promise<{ wait: () => Promise<unknown> }>) => {
     setBusy(true);
@@ -224,7 +266,10 @@ export default function Home() {
 
       <section className="statusBand">
         <span>{contractUrlLabel}</span>
-        <strong>{status}</strong>
+        <div className="statusActions">
+          <strong>{status}</strong>
+          {isWrongNetwork && <button onClick={switchNetwork}>Switch Network</button>}
+        </div>
       </section>
 
       <nav className="tabs" aria-label="Workflow panels">

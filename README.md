@@ -169,6 +169,11 @@ PRIVATE_KEY=
 ARC_RPC_URL=
 ARC_CHAIN_ID=
 USDC_CONTRACT_ADDRESS=
+PAYER_ADDRESS=
+RECIPIENT_ADDRESS=
+ARCSCAN_API_KEY=
+ARCSCAN_API_URL=
+ARCSCAN_BROWSER_URL=
 ```
 
 Frontend:
@@ -182,6 +187,8 @@ NEXT_PUBLIC_ARC_CHAIN_ID=
 Notes:
 
 - `USDC_CONTRACT_ADDRESS` is used by the deployment script.
+- `PAYER_ADDRESS` and `RECIPIENT_ADDRESS` are used by the Arc demo deployment script.
+- `ARCSCAN_API_KEY`, `ARCSCAN_API_URL`, and `ARCSCAN_BROWSER_URL` are optional verification settings. Defaults target Arc Testnet Arcscan.
 - `NEXT_PUBLIC_CONTRACT_ADDRESS` is the deployed `CorporateSafeTransfer` contract.
 - `NEXT_PUBLIC_USDC_ADDRESS` should match the USDC token used by the deployed contract.
 - `ARC_CHAIN_ID` and `NEXT_PUBLIC_ARC_CHAIN_ID` are left configurable because public Arc testnet details may change.
@@ -235,18 +242,32 @@ Set:
 
 ```env
 PRIVATE_KEY=
-ARC_RPC_URL=
-ARC_CHAIN_ID=
-USDC_CONTRACT_ADDRESS=
+ARC_RPC_URL=https://rpc.testnet.arc.network
+ARC_CHAIN_ID=5042002
+USDC_CONTRACT_ADDRESS=0x3600000000000000000000000000000000000000
+PAYER_ADDRESS=
+RECIPIENT_ADDRESS=
 ```
 
-Then deploy:
+`PRIVATE_KEY` should be Mary's deployer wallet. `PAYER_ADDRESS` should be Ralph's wallet, and `RECIPIENT_ADDRESS` should be Rita's wallet.
+
+Mary needs Arc Testnet USDC for deployment gas and role-configuration transactions. Ralph needs Arc Testnet USDC for deposits and gas. Rita needs Arc Testnet USDC for withdrawal gas.
+
+Deploy and configure roles in one step:
 
 ```bash
-npm run deploy:arc
+npm run deploy:arc:demo
 ```
 
-If Arc explorer verification is available for your target network, verify the contract using the explorer's current Hardhat or API instructions. Keep the constructor argument as the USDC token address used at deployment.
+The script prints the deployed contract address and the frontend environment variables.
+
+Verify the contract source on Arcscan:
+
+```bash
+npx hardhat verify --network arc <DEPLOYED_CONTRACT_ADDRESS> 0x3600000000000000000000000000000000000000
+```
+
+Arcscan is Blockscout-based. If automated Hardhat verification is unavailable or temporarily unstable, use the Arcscan contract verification UI and the same constructor argument.
 
 ## Frontend Usage
 

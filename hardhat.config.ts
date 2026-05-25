@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "dotenv/config";
 
 const privateKey = process.env.PRIVATE_KEY;
-const arcRpcUrl = process.env.ARC_RPC_URL || "";
+const arcRpcUrl = process.env.ARC_RPC_URL || "https://rpc.testnet.arc.network";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -26,8 +26,23 @@ const config: HardhatUserConfig = {
     arc: {
       url: arcRpcUrl,
       accounts: privateKey ? [privateKey] : [],
-      chainId: Number(process.env.ARC_CHAIN_ID || 0) || undefined
+      chainId: Number(process.env.ARC_CHAIN_ID || 5042002)
     }
+  },
+  etherscan: {
+    apiKey: {
+      arc: process.env.ARCSCAN_API_KEY || "arcscan"
+    },
+    customChains: [
+      {
+        network: "arc",
+        chainId: 5042002,
+        urls: {
+          apiURL: process.env.ARCSCAN_API_URL || "https://testnet.arcscan.app/api",
+          browserURL: process.env.ARCSCAN_BROWSER_URL || "https://testnet.arcscan.app"
+        }
+      }
+    ]
   }
 };
 

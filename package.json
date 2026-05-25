@@ -9,6 +9,7 @@
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:demo": "hardhat run scripts/deploy-local-demo.ts --network localhost",
     "deploy:arc": "hardhat run scripts/deploy.ts --network arc",
+    "deploy:arc:demo": "hardhat run scripts/deploy-arc-demo.ts --network arc",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint"
