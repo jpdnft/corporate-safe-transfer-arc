@@ -2,17 +2,18 @@
 
 Corporate Safe Transfer is a reference implementation for a safer corporate USDC transfer workflow on Arc. It shows how a company can use an EVM-compatible smart contract to reduce payment-address mistakes in a recurring treasury or subsidiary funding process.
 
-The core workflow has three named users:
+To demonstrate the core workflow, we have invented three named users / roles:
 
-- Mary, the contract owner and CFO, configures the authorized payer and recipient wallets.
-- Ralph, the U.S.-based accountant, funds the contract from the approved payer wallet.
-- Rita, the foreign subsidiary accountant, withdraws available transfers from the approved recipient wallet.
+1. Mary, the CFO.  Mary is the contract owner / deployer, and configures the authorized payer and recipient wallets.
+2. Ralph, the U.S.-based accountant who funds the contract from the approved payer wallet.
+3. Rita, the foreign subsidiary accountant who withdraws available transfers from the approved recipient wallet.
 
-The dApp intentionally removes recipient-address entry from Ralph's payment workflow. Mary configures Rita's recipient wallet once, and Ralph deposits USDC against that configured route with a memo and internal reference.
+The dApp intentionally defines what each party may or may not do -- most importantly removing recipient-address entry from Ralph's payment workflow. Mary configures the payer and receiver wallets once, and all transactions are marked with a memo and internal reference.
 
 ## What this repository demonstrates
 
 - A Solidity smart contract for controlled corporate USDC transfers.
+-  TypeScript for the frontend logic, configuration, deployment scripts, and tests, and Solidity for the smart contracts.
 - A Next.js frontend with role-oriented panels for Mary, Ralph, and Rita.
 - A local Hardhat test and deployment workflow.
 - An Arc Testnet deployment path.

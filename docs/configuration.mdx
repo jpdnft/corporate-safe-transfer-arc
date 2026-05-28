@@ -5,18 +5,15 @@ This project uses environment variables for deployment and frontend runtime conf
 ## Deployment variables
 
 ```env
-PRIVATE_KEY=
-ARC_RPC_URL=
-ARC_CHAIN_ID=
-USDC_CONTRACT_ADDRESS=
-PAYER_ADDRESS=
-RECIPIENT_ADDRESS=
-ARCSCAN_API_KEY=
-ARCSCAN_API_URL=
-ARCSCAN_BROWSER_URL=
+PRIVATE_KEY=[private key of the deployer wallet]
+ARC_RPC_URL=https://rpc.testnet.arc.network
+ARC_CHAIN_ID=5042002
+USDC_CONTRACT_ADDRESS=0x3600000000000000000000000000000000000000
+PAYER_ADDRESS=[payer wallet to configure during deployment]
+RECIPIENT_ADDRESS=[recipient wallet to configure during deployment]
 ```
 
-`PRIVATE_KEY` should be Mary's deployer wallet for Arc deployments.
+`PRIVATE_KEY` should be Mary's deployer wallet private key, for Arc deployments.
 
 `USDC_CONTRACT_ADDRESS` is the token address passed to the contract constructor.
 
@@ -24,7 +21,15 @@ ARCSCAN_BROWSER_URL=
 
 `RECIPIENT_ADDRESS` is Rita's wallet when using the demo deployment script.
 
-`ARCSCAN_API_KEY`, `ARCSCAN_API_URL`, and `ARCSCAN_BROWSER_URL` are optional verification settings.
+## Optional verification variables
+
+```env
+ARCSCAN_API_KEY=
+ARCSCAN_API_URL=
+ARCSCAN_BROWSER_URL=
+```
+
+These Arcscan variables are not required for deployment or local frontend use. The Hardhat configuration provides defaults for Arc Testnet verification, but you can set these values if the explorer API endpoint, browser URL, or verification requirements change.
 
 ## Frontend variables
 

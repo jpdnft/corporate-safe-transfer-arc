@@ -15,9 +15,9 @@ Corporate Safe Transfer is split into a smart contract layer, deployment scripts
 
 ## Runtime flow
 
-1. Mary deploys `CorporateSafeTransfer` with a USDC token address.
-2. Mary sets Ralph's wallet as the authorized payer.
-3. Mary sets Rita's wallet as the authorized recipient.
+1. Mary (the CFO) deploys `CorporateSafeTransfer` with a USDC token address.
+2. Ralph is the U.S.-based accountant. Mary sets Ralph's wallet as the authorized payer.
+3. Rita is the overseas accountant. Mary sets Rita's wallet as the authorized recipient.
 4. Ralph approves the contract to spend USDC.
 5. Ralph deposits USDC with a memo and internal reference.
 6. The contract records the transfer and increases `totalPendingAmount`.

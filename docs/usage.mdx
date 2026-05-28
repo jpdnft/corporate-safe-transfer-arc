@@ -6,13 +6,29 @@ This guide walks through the intended workflow for Mary, Ralph, and Rita.
 
 Mary needs a deployed `CorporateSafeTransfer` contract and a USDC token address. For a local demo, use `MockUSDC`. For Arc Testnet, use the Arc Testnet USDC address configured in the deployment environment.
 
-The frontend must know:
+The frontend must know which deployed contract, USDC token, and chain ID to use. These values differ between local Hardhat development and Arc Testnet.
+
+For local development and testing with Hardhat:
 
 ```env
-NEXT_PUBLIC_CONTRACT_ADDRESS=
-NEXT_PUBLIC_USDC_ADDRESS=
-NEXT_PUBLIC_ARC_CHAIN_ID=
+NEXT_PUBLIC_CONTRACT_ADDRESS=[your local CorporateSafeTransfer address]
+NEXT_PUBLIC_USDC_ADDRESS=[your local MockUSDC address]
+NEXT_PUBLIC_ARC_CHAIN_ID=31337
 ```
+
+`31337` is Hardhat's default local chain ID. The local contract addresses are not universal. They come from the local deployment output and can change if the local chain state or deployment order changes.
+
+For Arc Testnet deployment:
+
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=[your contract's deployed address]
+NEXT_PUBLIC_USDC_ADDRESS=0x3600000000000000000000000000000000000000
+NEXT_PUBLIC_ARC_CHAIN_ID=5042002
+```
+
+The Arc Testnet chain ID and USDC ERC-20 interface address are documented by [Arc](https://docs.arc.io/integrate/on-off-ramps) and [Circle](https://developers.circle.com/stablecoins/usdc-contract-addresses). The `NEXT_PUBLIC_CONTRACT_ADDRESS` value is still deployment-specific.
+
+Find the deployment-specific values in the terminal output after running `npm run deploy:demo` for local Hardhat or `npm run deploy:arc:demo` for Arc Testnet. Both scripts print a section that starts with `Add these to .env.local, then restart the Next dev server:`.
 
 ## Mary: contract owner
 
@@ -44,7 +60,7 @@ Ralph's responsibilities:
 - Confirm that the displayed recipient wallet is Rita's approved wallet.
 - Enter the USDC amount.
 - Enter a memo, such as `Sydney subsidiary operating funds`.
-- Enter an internal reference, such as `AP-2026-05-001`.
+- Enter an internal reference, such as `AP-2026-05-28`.
 - Approve USDC spend for the contract.
 - Deposit USDC.
 
