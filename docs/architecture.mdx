@@ -1,0 +1,41 @@
+# Architecture
+
+Corporate Safe Transfer is split into a smart contract layer, deployment scripts, tests, and a Next.js dApp.
+
+## System components
+
+| Area | Location | Purpose |
+| --- | --- | --- |
+| Smart contract | `contracts/CorporateSafeTransfer.sol` | Stores role addresses, transfer records, pending amounts, and withdrawal state. |
+| Mock token | `contracts/test/MockUSDC.sol` | Provides a local ERC-20 token with USDC-style decimals for tests and demos. |
+| Tests | `test/CorporateSafeTransfer.ts` | Verifies authorization, deposit, withdrawal, and recovery behavior. |
+| Deployment scripts | `scripts/` | Deploy and configure the contract for local or Arc Testnet demos. |
+| Frontend | `src/app/page.tsx` | Presents Mary, Ralph, and Rita with role-specific workflows. |
+| Docs | `docs/` | MDX documentation rendered by the app at `/docs`. |
+
+## Runtime flow
+
+1. Mary deploys `CorporateSafeTransfer` with a USDC token address.
+2. Mary sets Ralph's wallet as the authorized payer.
+3. Mary sets Rita's wallet as the authorized recipient.
+4. Ralph approves the contract to spend USDC.
+5. Ralph deposits USDC with a memo and internal reference.
+6. The contract records the transfer and increases `totalPendingAmount`.
+7. Rita withdraws an available transfer.
+8. The contract marks the transfer withdrawn, records the withdrawal timestamp, reduces `totalPendingAmount`, and sends USDC to Rita.
+
+## Frontend structure
+
+The dApp has three panels:
+
+- Admin Panel for Mary.
+- Pay Panel for Ralph.
+- Receive Panel for Rita.
+
+Each panel checks the connected wallet against the role addresses stored in the contract. The UI disables actions when the connected wallet is not authorized, while the contract enforces the same rules onchain.
+
+## Documentation architecture
+
+The documentation source lives in top-level `.mdx` files under `docs/`. The Next.js app imports those files through `src/docs/registry.tsx` and renders them through `/docs` routes.
+
+This keeps documentation close to the code and allows docs changes to use the same Git, pull request, review, and deployment process as the app.

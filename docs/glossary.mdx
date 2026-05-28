@@ -1,0 +1,37 @@
+# Glossary
+
+## Arc
+
+An EVM-compatible Layer 1 blockchain. This project frames Arc as useful for enterprise USDC workflows because USDC can be used for gas.
+
+## USDC
+
+A dollar-denominated stablecoin. In this project, USDC is the asset Ralph deposits and Rita withdraws.
+
+## Owner
+
+The contract administrator. In the demo narrative, Mary is the owner.
+
+## Payer
+
+The wallet authorized to deposit USDC into the contract. In the demo narrative, Ralph is the payer.
+
+## Recipient
+
+The wallet authorized to withdraw available transfers. In the demo narrative, Rita is the recipient.
+
+## Memo
+
+Human-readable context for a transfer.
+
+## Internal reference
+
+An accounting or operations identifier, such as an invoice, payment run, or approval reference.
+
+## Pending transfer
+
+A transfer record funded by the payer but not yet withdrawn by the recipient.
+
+## Untracked USDC
+
+USDC held by the contract that is not assigned to a pending transfer record. This can happen if someone sends USDC directly to the contract address instead of using `deposit`.

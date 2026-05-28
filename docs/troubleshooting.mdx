@@ -1,0 +1,45 @@
+# Troubleshooting
+
+## Contract not configured
+
+Set:
+
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=
+```
+
+Then restart the Next.js dev server.
+
+## Wrong network
+
+If the status band asks you to switch networks, check:
+
+```env
+NEXT_PUBLIC_ARC_CHAIN_ID=
+```
+
+Then switch your browser wallet to the matching network.
+
+## No injected wallet found
+
+Install or enable a browser wallet. The frontend expects `window.ethereum`.
+
+## Unauthorized payer
+
+Ralph must connect the exact wallet Mary configured as payer. If Ralph connects another wallet, deposits are disabled in the UI and rejected by the contract.
+
+## Unauthorized recipient
+
+Rita must connect the exact wallet Mary configured as recipient. If Rita connects another wallet, withdrawals are disabled in the UI and rejected by the contract.
+
+## Deposit fails after entering an amount
+
+Ralph must approve USDC spend before depositing. Use `Approve USDC Spend`, wait for confirmation, then use `Deposit USDC`.
+
+## Transfer is not visible
+
+Refresh the page after the transaction confirms. The frontend reads transfer IDs from the contract and then loads each transfer record.
+
+## Cannot withdraw twice
+
+This is expected. A transfer can move from available to completed only once.

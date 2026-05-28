@@ -1,0 +1,58 @@
+# Security Model
+
+Corporate Safe Transfer reduces one narrow but important operational risk: the payer should not manually enter the recipient address for each recurring corporate payment.
+
+The contract does this by separating configuration from payment execution.
+
+## Trust boundaries
+
+Mary controls role configuration. Ralph can fund transfers only from the configured payer wallet. Rita can withdraw transfers only from the configured recipient wallet.
+
+The workflow assumes Mary has correctly verified Ralph and Rita's wallet addresses before setting them onchain.
+
+## Onchain controls
+
+- Only the owner can set the payer.
+- Only the owner can set the recipient.
+- The payer cannot be the zero address.
+- The recipient cannot be the zero address.
+- Only the configured payer can deposit.
+- Only the configured recipient can withdraw.
+- Deposit amount must be greater than zero.
+- Memo and internal reference length are capped.
+- A transfer must exist before it can be withdrawn.
+- A withdrawn transfer cannot be withdrawn again.
+- Pending transfer totals are tracked separately from raw token balance.
+- Owner recovery is limited to untracked USDC that is not reserved for pending transfers.
+
+## What the frontend adds
+
+The frontend mirrors the contract's role model:
+
+- Mary sees owner-only configuration actions.
+- Ralph sees payer authorization, allowance, balance, and deposit actions.
+- Rita sees recipient authorization and transfer withdrawal actions.
+
+These checks improve usability, but they are not the security boundary. The contract remains the source of enforcement.
+
+## Important limitations
+
+This proof of concept does not include:
+
+- Multisig ownership.
+- Compliance or sanctions screening.
+- Transaction limits.
+- Cancellation or refund logic.
+- Emergency pause.
+- Upgrade strategy.
+- Indexed accounting exports.
+- Frontend domain protection.
+- Wallet-risk scoring.
+- Formal verification.
+- Smart contract audit.
+
+## Production direction
+
+A production version should consider multisig ownership, audited contracts, stronger role governance, event indexing, accounting exports, monitoring, alerting, and compliance controls.
+
+For function-level details, see [Contracts](/docs/contracts).

@@ -85,6 +85,19 @@ h1 {
   line-height: 1.55;
 }
 
+.docsLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: white;
+  color: var(--accent-strong);
+  padding: 0 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .walletBox,
 .statusBand,
 .panel {
@@ -324,13 +337,161 @@ textarea {
   font-size: 0.92rem;
 }
 
+.docsShell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+  gap: 32px;
+}
+
+.docsSidebar {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 16px;
+}
+
+.docsBrand {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.docsSidebar nav {
+  display: grid;
+  gap: 4px;
+}
+
+.docsSidebar nav a {
+  border-radius: 6px;
+  color: var(--muted);
+  padding: 9px 10px;
+  text-decoration: none;
+}
+
+.docsSidebar nav a.active,
+.docsSidebar nav a:hover {
+  background: #e5f3f1;
+  color: var(--accent-strong);
+}
+
+.docsContent {
+  min-width: 0;
+}
+
+.docsHeader {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+}
+
+.docsHeader h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.docsHeader p:last-child {
+  max-width: 780px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.mdxBody {
+  max-width: 860px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+.mdxBody h1 {
+  display: none;
+}
+
+.mdxBody h2 {
+  margin: 34px 0 12px;
+  font-size: 1.45rem;
+}
+
+.mdxBody h3 {
+  margin: 28px 0 10px;
+  font-size: 1.1rem;
+}
+
+.mdxBody p,
+.mdxBody ul,
+.mdxBody ol,
+.mdxBody table,
+.mdxBody pre {
+  margin-bottom: 18px;
+}
+
+.mdxBody a {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.mdxBody code {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: white;
+  padding: 2px 5px;
+  font-size: 0.92em;
+}
+
+.mdxBody pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #172026;
+  color: #f6f7f9;
+  padding: 16px;
+}
+
+.mdxBody pre code {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.mdxBody table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-wrap: anywhere;
+}
+
+.mdxBody th,
+.mdxBody td {
+  border: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mdxBody th {
+  background: white;
+}
+
 @media (max-width: 860px) {
   .topbar,
   .formGrid.two,
   .dataGrid,
   .dataGrid.compact,
-  .transferRow {
+  .transferRow,
+  .docsShell {
     grid-template-columns: 1fr;
+  }
+
+  .docsSidebar {
+    position: static;
   }
 
   .walletBox {

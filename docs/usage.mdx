@@ -1,0 +1,89 @@
+# Usage
+
+This guide walks through the intended workflow for Mary, Ralph, and Rita.
+
+## Before the workflow begins
+
+Mary needs a deployed `CorporateSafeTransfer` contract and a USDC token address. For a local demo, use `MockUSDC`. For Arc Testnet, use the Arc Testnet USDC address configured in the deployment environment.
+
+The frontend must know:
+
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=
+NEXT_PUBLIC_USDC_ADDRESS=
+NEXT_PUBLIC_ARC_CHAIN_ID=
+```
+
+## Mary: contract owner
+
+Mary is the contract owner, CFO, and deployer.
+
+Mary's responsibilities:
+
+- Deploy the contract.
+- Confirm that the deployed contract points to the intended USDC token.
+- Connect the owner wallet in the dApp.
+- Open the Admin Panel.
+- Set Ralph's wallet as the payer.
+- Set Rita's wallet as the recipient.
+- Review the contract owner, payer, recipient, USDC token, contract balance, and pending transfer total.
+
+Mary should verify Ralph and Rita's addresses outside the dApp before setting them. The contract protects the workflow only after the approved payer and recipient are correctly configured.
+
+Mary can update the payer or recipient later. If Mary changes the recipient while transfers are pending, the new recipient wallet becomes the wallet that can withdraw those pending transfers.
+
+## Ralph: U.S.-based accountant
+
+Ralph is the authorized payer.
+
+Ralph's responsibilities:
+
+- Connect the wallet Mary configured as the payer.
+- Open the Pay Panel.
+- Confirm that the UI shows `Authorized payer: Yes`.
+- Confirm that the displayed recipient wallet is Rita's approved wallet.
+- Enter the USDC amount.
+- Enter a memo, such as `Sydney subsidiary operating funds`.
+- Enter an internal reference, such as `AP-2026-05-001`.
+- Approve USDC spend for the contract.
+- Deposit USDC.
+
+Ralph does not type Rita's recipient wallet address during payment. That is the main operational safety feature of the workflow.
+
+If Ralph connects the wrong wallet, the UI disables payer actions and the contract rejects deposits with `NotAuthorizedPayer`.
+
+## Rita: foreign subsidiary accountant
+
+Rita is the authorized recipient.
+
+Rita's responsibilities:
+
+- Connect the wallet Mary configured as the recipient.
+- Open the Receive Panel.
+- Confirm that the UI shows `Authorized recipient: Yes`.
+- Review available transfers.
+- Check each amount, memo, internal reference, funding wallet, and created timestamp.
+- Withdraw the desired available transfer.
+- Review completed transfers after withdrawal.
+
+If Rita connects the wrong wallet, the UI disables withdrawals and the contract rejects withdrawal attempts with `NotAuthorizedRecipient`.
+
+## Local demo flow
+
+1. Start a local Hardhat node.
+2. Deploy the demo contract and mock USDC.
+3. Set the frontend environment variables printed by the deployment script.
+4. Start the Next.js app.
+5. Mary connects the owner wallet and configures Ralph and Rita.
+6. Ralph connects the payer wallet, approves USDC, and deposits funds.
+7. Rita connects the recipient wallet and withdraws the available transfer.
+
+## Operational notes
+
+- Ralph must approve USDC before depositing.
+- Deposits require a nonzero amount.
+- Memo and internal reference are limited to 200 bytes each.
+- Transfers cannot be withdrawn twice.
+- Available and completed transfer lists are loaded from onchain transfer records.
+
+For the contract-level controls behind this workflow, see [Security Model](/docs/security-model) and [Contracts](/docs/contracts).

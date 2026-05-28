@@ -1,0 +1,51 @@
+# Configuration
+
+This project uses environment variables for deployment and frontend runtime configuration.
+
+## Deployment variables
+
+```env
+PRIVATE_KEY=
+ARC_RPC_URL=
+ARC_CHAIN_ID=
+USDC_CONTRACT_ADDRESS=
+PAYER_ADDRESS=
+RECIPIENT_ADDRESS=
+ARCSCAN_API_KEY=
+ARCSCAN_API_URL=
+ARCSCAN_BROWSER_URL=
+```
+
+`PRIVATE_KEY` should be Mary's deployer wallet for Arc deployments.
+
+`USDC_CONTRACT_ADDRESS` is the token address passed to the contract constructor.
+
+`PAYER_ADDRESS` is Ralph's wallet when using the demo deployment script.
+
+`RECIPIENT_ADDRESS` is Rita's wallet when using the demo deployment script.
+
+`ARCSCAN_API_KEY`, `ARCSCAN_API_URL`, and `ARCSCAN_BROWSER_URL` are optional verification settings.
+
+## Frontend variables
+
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=
+NEXT_PUBLIC_USDC_ADDRESS=
+NEXT_PUBLIC_ARC_CHAIN_ID=
+```
+
+`NEXT_PUBLIC_CONTRACT_ADDRESS` is the deployed `CorporateSafeTransfer` address.
+
+`NEXT_PUBLIC_USDC_ADDRESS` should match the token used by the deployed contract.
+
+`NEXT_PUBLIC_ARC_CHAIN_ID` tells the UI which chain to expect. If the connected wallet is on another chain, the app prompts the user to switch networks.
+
+## Arc Testnet example
+
+```env
+ARC_RPC_URL=https://rpc.testnet.arc.network
+ARC_CHAIN_ID=5042002
+USDC_CONTRACT_ADDRESS=0x3600000000000000000000000000000000000000
+```
+
+Arc network details may change, so keep chain and token values configurable rather than hardcoding them throughout the application.

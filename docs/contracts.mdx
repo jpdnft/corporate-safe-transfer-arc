@@ -1,0 +1,124 @@
+# Contracts
+
+The main contract is `CorporateSafeTransfer`.
+
+```solidity
+contract CorporateSafeTransfer is Ownable
+```
+
+It uses OpenZeppelin `Ownable`, `IERC20`, and `SafeERC20`.
+
+## Constructor
+
+```solidity
+constructor(address usdcTokenAddress)
+```
+
+The constructor stores the USDC token address and sets the deployer as the owner. The token address cannot be zero.
+
+## State
+
+The contract stores:
+
+- `payer`
+- `recipient`
+- immutable `usdcToken`
+- private `transferCounter`
+- public `totalPendingAmount`
+- private mapping of transfer IDs to transfer records
+
+Each transfer stores:
+
+```solidity
+struct Transfer {
+    uint256 id;
+    uint256 amount;
+    string memo;
+    string internalReference;
+    address fundedBy;
+    bool withdrawn;
+    uint256 createdAt;
+    uint256 withdrawnAt;
+}
+```
+
+The UI uses the word `reference`. The Solidity field is named `internalReference` because `reference` is reserved by the compiler.
+
+## Owner functions
+
+```solidity
+function setPayer(address newPayer) external onlyOwner
+function setRecipient(address newRecipient) external onlyOwner
+function recoverUntrackedUSDC(address to, uint256 amount) external onlyOwner
+```
+
+`setPayer` and `setRecipient` configure the wallets used by Ralph and Rita.
+
+`recoverUntrackedUSDC` lets the owner recover USDC sent directly to the contract without a transfer record. It cannot recover USDC reserved for pending transfers because the requested recovery amount must be less than or equal to:
+
+```solidity
+usdcToken.balanceOf(address(this)) - totalPendingAmount
+```
+
+See [Security Model](/docs/security-model) for the reasoning behind this control.
+
+## Payer function
+
+```solidity
+function deposit(uint256 amount, string calldata memo, string calldata internalReference)
+    external
+    returns (uint256 transferId)
+```
+
+Only the configured payer can call `deposit`.
+
+The function:
+
+1. Checks that `msg.sender` is the payer.
+2. Checks that the amount is greater than zero.
+3. Checks memo and reference length.
+4. Transfers USDC from the payer to the contract.
+5. Creates a transfer record.
+6. Increases `totalPendingAmount`.
+7. Emits `TransferCreated`.
+
+## Recipient function
+
+```solidity
+function withdraw(uint256 transferId) external
+```
+
+Only the configured recipient can call `withdraw`.
+
+The function:
+
+1. Checks that `msg.sender` is the recipient.
+2. Checks that the transfer exists.
+3. Checks that it has not already been withdrawn.
+4. Marks the transfer withdrawn.
+5. Records the withdrawal timestamp.
+6. Reduces `totalPendingAmount`.
+7. Sends USDC to the recipient.
+8. Emits `TransferWithdrawn`.
+
+## Read functions
+
+```solidity
+function getConfig() external view returns (...)
+function getTransfer(uint256 transferId) external view returns (Transfer memory)
+function getTransferCount() external view returns (uint256)
+function getAvailableTransfers() external view returns (uint256[] memory)
+function getCompletedTransfers() external view returns (uint256[] memory)
+```
+
+The frontend uses available and completed transfer ID arrays, then fetches each transfer record by ID.
+
+## Events
+
+- `PayerUpdated`
+- `RecipientUpdated`
+- `TransferCreated`
+- `TransferWithdrawn`
+- `UntrackedUSDCRecovered`
+
+These events support transparency and future indexing work.

@@ -1,0 +1,68 @@
+# Setup
+
+Use this guide to prepare the project for local development.
+
+## Requirements
+
+- Node.js compatible with this repo's Next.js and Hardhat dependencies.
+- npm.
+- A browser wallet for frontend testing.
+- Arc Testnet USDC if deploying and testing on Arc Testnet.
+
+## Install dependencies
+
+```bash
+npm install
+```
+
+## Create environment files
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+The frontend uses public environment variables from `.env.local`:
+
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=
+NEXT_PUBLIC_USDC_ADDRESS=
+NEXT_PUBLIC_ARC_CHAIN_ID=
+```
+
+## Compile contracts
+
+```bash
+npm run compile
+```
+
+## Run tests
+
+```bash
+npm test
+```
+
+## Start the frontend
+
+```bash
+npm run dev
+```
+
+Open the local URL shown in the terminal. The application is usually available at:
+
+```text
+http://localhost:3000
+```
+
+The documentation is available at:
+
+```text
+http://localhost:3000/docs
+```

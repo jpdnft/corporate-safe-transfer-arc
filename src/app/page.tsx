@@ -257,6 +257,7 @@ export default function Home() {
           <p className="summary">
             Use a smart contract to make a recurring corporate USDC transfer safer, more auditable, and less prone to address-entry mistakes.
           </p>
+          <a className="docsLink" href="/docs">Read the docs</a>
         </div>
         <div className="walletBox">
           <span>{account ? shorten(account) : "No wallet connected"}</span>
